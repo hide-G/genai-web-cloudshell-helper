@@ -36,8 +36,21 @@ Built with Kiro 🤖
 - リージョンは **東京 (ap-northeast-1)** を使用
 
 ### 1. スクリプトを CloudShell に取り込む
+
+**おすすめ: `curl` で 1 行取得**（CloudShell には curl がプリインストール済み）
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hide-G/genai-web-cloudshell-helper/main/genai-web-cloudshell-helper.sh -o genai-web-cloudshell-helper.sh
+```
+
+> 既に同名ファイルがあって最新版に置き換えたい場合は、上記がそのまま上書きします。
+> （`-o` で同名指定。`-f` で 4xx/5xx 時にファイルを作らず終了します）
+
+**代替: ブラウザからアップロード**
+
 CloudShell 右上「アクション ▼ → ファイルのアップロード」で
-`genai-web-cloudshell-helper.sh` をアップロードします。
+`genai-web-cloudshell-helper.sh` を選択。
+（同名ファイルが既にあるとアップロードに失敗するので、先に `rm -f ~/genai-web-cloudshell-helper.sh` してから）
 
 ### 2. ソース取得・準備
 ```bash
