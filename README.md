@@ -32,8 +32,53 @@ Built with Kiro 🤖
 ## クイックスタート（CloudShell）
 
 ### 0. 事前条件
-- 自分の AWS アカウントにサインインできること（デプロイに十分な IAM 権限。管理者相当を推奨）
+- 自分の AWS アカウントにサインインできること
 - リージョンは **東京 (ap-northeast-1)** を使用
+- 有効な支払い方法（クレジットカード等）が登録済みであること
+  （新規アカウントだと一部の Bedrock モデル利用契約が通らないため）
+- **AdministratorAccess 相当の IAM 権限**を持っていること
+  （CDK が CloudFormation/IAM/Lambda/CloudFront/Cognito/DynamoDB/S3/KMS/API Gateway 等を作成するため）
+
+#### 権限の自己診断（推奨）
+
+ハンズオン開始前に CloudShell で以下を実行してください。すべて `allowed` なら準備 OK です。
+
+```bash
+ARN=$(aws sts get-caller-identity --query Arn --output text)
+echo "Caller: $ARN"
+aws iam simulate-principal-policy \
+  --policy-source-arn "$ARN" \
+  --action-names \
+    cloudformation:CreateStack \
+    iam:CreateRole \
+    iam:PassRole \
+    lambda:CreateFunction \
+    cloudfront:CreateDistribution \
+    cognito-idp:CreateUserPool \
+    dynamodb:CreateTable \
+    s3:CreateBucket \
+    apigateway:POST \
+    kms:CreateKey \
+    bedrock:InvokeModel \
+    bedrock:ListFoundationModels \
+  --query "EvaluationResults[].{Action:EvalActionName,Decision:EvalDecision}" \
+  --output table
+```
+
+**結果の見方**
+
+| 結果 | 意味 |
+|------|------|
+| すべて `allowed` | ✅ ハンズオン続行可能 |
+| `implicitDeny` または `explicitDeny` | ⚠️ そのままだとデプロイ途中で詰まる可能性大。IAM 権限の見直しが必要 |
+| `simulate-principal-policy` 自体が AccessDenied | ⚠️ そもそも `iam:SimulatePrincipalPolicy` 権限が無い ＝ Admin 相当ではない可能性大 |
+
+**この診断の限界（参考）**
+
+- Service Control Policy (SCP / Organizations) による制約は検出できません
+- Bedrock のモデルアクセス（東京リージョン）有効化の有無は別途コンソールで確認してください
+- 各サービスのクォータ（VPC 数・CloudFront ディストリビューション数等）は別途確認が必要です
+- SSO（IAM Identity Center）経由の場合、ARN 形式によってはシミュレートが動かないことがあります
 
 ### 1. スクリプトを CloudShell に取り込む
 
