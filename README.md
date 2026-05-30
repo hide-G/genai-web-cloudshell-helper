@@ -25,7 +25,7 @@ Built with Kiro 🤖
 |----------|------|
 | `genai-web-cloudshell-helper.sh` | 本体（`setup` / `deploy` / `destroy` のサブコマンド方式） |
 | `cdk.json.handson-sample` | ハンズオン向けの構成サンプル（IP制限なし・監視オフ・セルフサインアップ有効） |
-| `test/` | （主催者用）ローカル検証スクリプト |
+| `HANDSON-query-expansion-rag.md` | （発展課題）Query Expansion RAG を CloudShell でデプロイし源内と連携する手順書 |
 
 ---
 
@@ -204,11 +204,10 @@ cd ~/genai-web
 
 ---
 
-## 主催者向け：ローカル事前検証（Windows / WSL不要）
+## 主催者向け：ローカル事前検証（Windows / WSL不要・任意）
 
-- `genai-web-cloudshell-helper.sh` の静的解析: shellcheck（スタンドアロン EXE 利用、インストール不要）
-- `test/test-cdkjson-transform.js`: `deploy` の cdk.json 自動調整ロジックの単体テスト
-  （空配列 WAF トラップを防げているかを検証。`node test/test-cdkjson-transform.js` で実行）
+`genai-web-cloudshell-helper.sh` の静的解析は shellcheck（スタンドアロン EXE、インストール不要）で
+ローカル実行できます。本リポジトリには検証用ファイルは含まれていません。
 
 > 本体の `setup`/`deploy` は CloudShell（Amazon Linux 2023 / bash / Node22）での実行を前提に
 > しています。Windows ローカルでの実行は想定していません（源内は Node v22 を engineStrict で
@@ -225,6 +224,21 @@ cd ~/genai-web
 | `cdk bootstrap` で権限エラー | 実行ロールに CloudFormation/IAM/S3 等の権限が必要 |
 | デプロイ成功だが AI 応答が出ない | Amazon Bedrock のモデルアクセス（東京）を有効化（`modelIds` のモデル） |
 | 「チーム管理」が出ない | `add-system-admin.sh` で管理者登録後、再ログイン |
+
+---
+
+## 発展課題: Query Expansion RAG との連携
+
+源内 Web の AI アプリ機能（外部 AI API 連携）を試したい上級者向けの追加課題です。
+デジタル庁が公開している **Query Expansion RAG API**（[digital-go-jp/genai-ai-api](https://github.com/digital-go-jp/genai-ai-api/tree/main/aws/query-expansion-rag)）を
+CloudShell でデプロイし、源内 Web に外部 AI アプリとして連携登録するまでの手順を記載しています。
+
+→ [HANDSON-query-expansion-rag.md](./HANDSON-query-expansion-rag.md)
+
+> ⚠️ **OpenSearch Serverless を使うため継続課金が発生します。検証後は必ず削除してください。**
+> また、このアプリは IAM Identity Center (SSO) 運用前提で設計されているため、
+> 一般的な AWS アカウント環境でデプロイするには複数のハマりどころがあります。
+> 詳細と回避策は手順書側に記載しています。
 
 ---
 
