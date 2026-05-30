@@ -61,8 +61,20 @@ chmod +x genai-web-cloudshell-helper.sh
 
 ### 3. （任意）カスタマイズ
 取得したソースを編集します（CloudShell のエディタ `vi`、または「アクション → ファイルのダウンロード/アップロード」で差し替え）。
-- ヘッダー/ロゴ: `~/genai-web/packages/web/src/components/ui/Logo.tsx`
-- フッター/コピーライト: `~/genai-web/packages/web/src/components/ui/Footer.tsx`
+- ヘッダー/ロゴ: `/tmp/genai-web/packages/web/src/components/ui/Logo.tsx`
+- フッター/コピーライト: `/tmp/genai-web/packages/web/src/components/ui/Footer.tsx`
+
+これなら一発置換です:
+
+```bash
+sed -i 's/ここにロゴが入る/源内ハンズオン/g' /tmp/genai-web/packages/web/src/components/ui/Logo.tsx
+sed -i 's/ここにロゴが入る/源内ハンズオン/g' /tmp/genai-web/packages/web/src/components/ui/Footer.tsx
+sed -i 's/ここにコピーライトが入る/© JAWS-UG AIML支部/g' /tmp/genai-web/packages/web/src/components/ui/Footer.tsx
+```
+
+> `Logo.tsx` には「ここにロゴが入る」が 2 箇所（ランディングページ用と通常ページ用）あり、
+> `sed` の `/g` フラグで両方とも一度に置換されます。文言部分（`源内ハンズオン` /
+> `© JAWS-UG AIML支部`）はお好みで変更してください。
 
 ### 4. デプロイ
 ```bash
