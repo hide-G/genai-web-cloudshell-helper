@@ -395,6 +395,17 @@ cmd_destroy() {
     exit 0
   fi
 
+  # ---- スタック存在確認 ----
+  local stack_name destroy_region
+  stack_name="GenerativeAiUseCasesStack${env_name}"
+  destroy_region="${AWS_REGION:-${AWS_DEFAULT_REGION:-ap-northeast-1}}"
+  if ! aws cloudformation describe-stacks --stack-name "$stack_name" \
+       --region "$destroy_region" >/dev/null 2>&1; then
+    err "CloudFormation スタック '${stack_name}' がリージョン '${destroy_region}' に見つかりません。"
+    err "環境名が正しいか確認してください（デプロイ時と同じ -e 値を使用する必要があります）。"
+    exit 1
+  fi
+
   if [[ -n "$env_name" ]]; then
     npm -w packages/cdk run cdk -- destroy --all --force -c "env=${env_name}"
   else
